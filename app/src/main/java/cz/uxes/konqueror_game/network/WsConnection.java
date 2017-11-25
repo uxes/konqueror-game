@@ -2,20 +2,22 @@ package cz.uxes.konqueror_game.network;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ListView;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import cz.uxes.konqueror_game.R;
+import cz.uxes.konqueror_game.UsersListActivity;
 
 /**
  * Created by uxes on 18.10.17.
@@ -24,22 +26,21 @@ import java.util.List;
 public class WsConnection extends AsyncTask<String, Void, String> {
 
     public WebSocket webSocket;
+    private String serverIP;
 
-    public List<User> fetchUsers() {
+    public WsConnection(String serverIP) {
+        this.serverIP = serverIP;
+    }
+
+    public void fetchUsers() {
 
         try{
 
             webSocket.sendText("{\"onlinePlayers\": true}");
 
-
-
-
-            return new ArrayList<>();
         }
         catch (Exception e){
             e.printStackTrace();
-            return new ArrayList<>();
-
         }
 
     }
@@ -47,11 +48,13 @@ public class WsConnection extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... server) {
 
+        final PlayerSingleton ps = PlayerSingleton.INSTANCE;
+
         try{
 
             webSocket = new WebSocketFactory()
                     .setConnectionTimeout(5000)
-                    .createSocket("ws://" + server[0] + ":8124")
+                    .createSocket("ws://" + serverIP + ":8124")
                     .addProtocol("connection")
                     .addListener(new WebSocketAdapter() {
                         // A text message arrived from the server.
@@ -59,31 +62,30 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                             System.out.println(message);
                             Log.d("cosiks", message);
 
-
-
                             JSONObject jObject = new JSONObject(message);
-                            String aJsonString = jObject.getString("players");
-                            Log.d("co tam je?", aJsonString);
+                            JSONArray players = jObject.getJSONArray("players");
 
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
+                            List<Player> newPlayerList = new ArrayList<Player>();
 
-                            TypeReference<List<User>> mapType = new TypeReference<List<User>>() {};
+                            for(int i = 0; i < players.length(); i++){
+                                Player player = new Player(
+                                        players.getJSONObject(i).getString("nick"),
+                                        players.getJSONObject(i).getString("score"),
+                                        players.getJSONObject(i).getInt("level")
+                                );
 
-                            //todo: nějak se mu nechce parsovat..
-                            List<User> returner = objectMapper.readValue(aJsonString, mapType);
-
-                            for (User u : returner) {
-                                Log.d("cosik", u.getNick());
+                                newPlayerList.add(player);
+                                Log.wtf("player - sc", player.getScore());
+                                Log.wtf("player - nick", player.getNick());
+                                Log.wtf("player - lvl", player.getLevel().toString());
 
                             }
 
+                            ps.setPlayerList(newPlayerList);
 
 
-                            Log.d("bloody", objectMapper.writeValueAsString(returner));
+                            UsersListActivity.listView.invalidate();
 
-
-                            Log.d("cosiksy", message);
                         }
                     })
                     .connect();
