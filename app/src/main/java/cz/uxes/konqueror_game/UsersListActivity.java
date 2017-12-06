@@ -1,12 +1,17 @@
 package cz.uxes.konqueror_game;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,12 +35,12 @@ public class UsersListActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.userList);
 
 
-        ws =  new WsConnection("10.0.0.6");
+        ws =  new WsConnection("10.0.0.139");
         ws.execute();
         //poprve spadne, jeste neni spojeni
         ws.fetchUsers();
 
-        PlayerSingleton ps = PlayerSingleton.INSTANCE;
+        final PlayerSingleton ps = PlayerSingleton.INSTANCE;
 
 
         ListView listView = (ListView) findViewById(R.id.userList);
@@ -44,6 +49,16 @@ public class UsersListActivity extends AppCompatActivity {
 
         CustomAdapter ca = new CustomAdapter(this, R.layout.user_row, ps.getPlayerList());
         listView.setAdapter(ca);
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "klikls na cosik " + position, Toast.LENGTH_LONG);
+                Log.d("cosik", "kliks.. " + ps.getPlayerList().get(position).getNick());
+            }
+
+        });
 
     }
 
@@ -54,6 +69,10 @@ public class UsersListActivity extends AppCompatActivity {
         ws.fetchUsers();
 
         PlayerSingleton ps = PlayerSingleton.INSTANCE;
+
+        TextView counter = (TextView) findViewById(R.id.onlinePlayerCounter);
+        Integer count = ps.getPlayerList().size();
+        counter.setText(count.toString());
 
 
         ListView listView = (ListView) findViewById(R.id.userList);
