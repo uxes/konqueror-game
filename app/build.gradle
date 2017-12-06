@@ -34,5 +34,7 @@ dependencies {
     compile 'com.neovisionaries:nv-websocket-client:2.3'
     compile 'com.fasterxml.jackson.core:jackson-core:2.7.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.2'
+    compile 'com.qozix:tileview:2.2.8'
+    compile 'com.orhanobut:logger:2.1.1'
     testCompile 'junit:junit:4.12'
 }

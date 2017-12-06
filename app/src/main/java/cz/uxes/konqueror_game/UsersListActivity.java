@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import cz.uxes.konqueror_game.map.KonquerMap;
 import cz.uxes.konqueror_game.network.PlayerSingleton;
 import cz.uxes.konqueror_game.network.WsConnection;
 import cz.uxes.konqueror_game.network.Player;
@@ -56,6 +57,9 @@ public class UsersListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getApplicationContext(), "klikls na cosik " + position, Toast.LENGTH_LONG);
                 Log.d("cosik", "kliks.. " + ps.getPlayerList().get(position).getNick());
+
+                Intent intent = new Intent(getApplicationContext(), KonquerMap.class);
+                startActivity(intent);
             }
 
         });
