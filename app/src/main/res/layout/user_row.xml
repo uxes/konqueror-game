@@ -20,6 +20,7 @@
             app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
+            android:id="@+id/userLevel"
             android:layout_width="40dp"
             android:layout_height="27dp"
             android:layout_marginLeft="8dp"
