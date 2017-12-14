@@ -11,6 +11,7 @@ public enum PlayerSingleton {
     INSTANCE;
 
     private List<Player> playerList = new ArrayList<>();
+    private List<Player> scoreList = new ArrayList<>();
 
     private PlayerSingleton() {}
 
@@ -20,5 +21,13 @@ public enum PlayerSingleton {
 
     public void setPlayerList(List<Player> playerList) {
         this.playerList = playerList;
+    }
+
+    public List<Player> getScoreList() {
+        return scoreList;
+    }
+
+    public void setScoreList(List<Player> scoreList) {
+        this.scoreList = scoreList;
     }
 }

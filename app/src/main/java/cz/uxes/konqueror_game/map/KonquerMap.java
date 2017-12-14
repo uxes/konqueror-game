@@ -2,11 +2,15 @@ package cz.uxes.konqueror_game.map;
 
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.qozix.tileview.TileView;
+import com.qozix.tileview.markers.MarkerLayout;
 
 import cz.uxes.konqueror_game.network.Realm;
 
@@ -24,30 +28,62 @@ public class KonquerMap extends Activity {
 
 
         super.onCreate( savedInstanceState );
-        tileView = new TileView( this );
-        tileView.setSize( 800, 800 );
+        TileView tileView = new TileView( this );
+        tileView.setSize( 420, 480 );
 
-        tileView.setScaleLimits( 0, 2 );
+        //tileView.setScaleLimits( 0, 2 );
 
         tileView.setShouldRenderWhilePanning( true );
 
         tileView.addDetailLevel( 1f, "tiles/1/%d-%d.png");
 
-        //setRealms();
-
-
-        TextView textView = new TextView(this);
-        textView.setText(realms[0].name);
-        tileView.addMarker(textView, 0.25, 0.75, null, null);
-
-
         tileView.defineBounds( 0, 0, 1, 1 );
 
+        addCosik(tileView);
+
+
+        // add a marker listener
+        tileView.setMarkerTapListener( mMarkerTapListener );
 
 
         setContentView( tileView );
 
+
     }
+
+    void addCosik(TileView viev){
+
+        Realm[] realms = {new Realm("Pískovna", 0.15, 0.5), new Realm("Zelená", 0.76, 0.26), new Realm("Hliuxov", 0.86, 0.82)};
+
+        for (Realm realm : realms) {
+
+            TextView textView = new TextView(this);
+            textView.setText(realm.name);
+            textView.setTextColor(Color.WHITE);
+            textView.setTag(realm);
+            viev.addMarker(textView, realm.x, realm.y, null, null);
+
+        }
+    }
+
+
+
+    private MarkerLayout.MarkerTapListener mMarkerTapListener = new MarkerLayout.MarkerTapListener() {
+        @Override
+        public void onMarkerTap(View v, int x, int y ) {
+            Toast.makeText( getApplicationContext(), "You tapped a pin " + x + " " + y, Toast.LENGTH_LONG ).show();
+
+            Realm realm = (Realm) v.getTag();
+
+            Log.d("name", realm.name);
+            Log.d("name x", "" +  realm.x);
+            Log.d("name y", "" +  realm.y);
+
+            Log.d("tap", v.toString());
+            Log.d("tap", "You tapped a pin " + x + " " + y);
+        }
+    };
+
 
     private void setRealms(){
 

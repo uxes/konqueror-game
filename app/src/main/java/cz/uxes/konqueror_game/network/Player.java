@@ -11,6 +11,10 @@ public class Player {
 
     public Player() {}
 
+    public Player(String nick, String score) {
+        this.nick = nick;
+        this.score = score;
+    }
     public Player(String nick, String score, Integer level) {
         this.nick = nick;
         this.score = score;

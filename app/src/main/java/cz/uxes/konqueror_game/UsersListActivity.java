@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.OnClick;
 import cz.uxes.konqueror_game.map.KonquerMap;
 import cz.uxes.konqueror_game.network.PlayerSingleton;
 import cz.uxes.konqueror_game.network.WsConnection;
@@ -43,9 +44,6 @@ public class UsersListActivity extends AppCompatActivity {
 
         final PlayerSingleton ps = PlayerSingleton.INSTANCE;
 
-
-        ListView listView = (ListView) findViewById(R.id.userList);
-
         Log.d("instance", ps.getPlayerList().toString());
 
         CustomAdapter ca = new CustomAdapter(this, R.layout.user_row, ps.getPlayerList());
@@ -65,6 +63,7 @@ public class UsersListActivity extends AppCompatActivity {
         });
 
     }
+
 
     public void loadPlayers(View view){
 

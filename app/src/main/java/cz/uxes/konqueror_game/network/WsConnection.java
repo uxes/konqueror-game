@@ -45,6 +45,19 @@ public class WsConnection extends AsyncTask<String, Void, String> {
 
     }
 
+    public void fetchScores(){
+
+
+        try{
+
+            webSocket.sendText("{\"score\": true}");
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected String doInBackground(String... server) {
 
@@ -63,25 +76,60 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                             Log.d("cosiks", message);
 
                             JSONObject jObject = new JSONObject(message);
-                            JSONArray players = jObject.getJSONArray("players");
 
-                            List<Player> newPlayerList = new ArrayList<Player>();
+                            try{
 
-                            for(int i = 0; i < players.length(); i++){
-                                Player player = new Player(
-                                        players.getJSONObject(i).getString("nick"),
-                                        players.getJSONObject(i).getString("score"),
-                                        players.getJSONObject(i).getInt("level")
-                                );
+                                JSONArray players = jObject.getJSONArray("players");
 
-                                newPlayerList.add(player);
-                                Log.wtf("player - sc", player.getScore());
-                                Log.wtf("player - nick", player.getNick());
-                                Log.wtf("player - lvl", player.getLevel().toString());
+                                List<Player> newPlayerList = new ArrayList<Player>();
 
+                                for(int i = 0; i < players.length(); i++){
+                                    Player player = new Player(
+                                            players.getJSONObject(i).getString("nick"),
+                                            players.getJSONObject(i).getString("score"),
+                                            players.getJSONObject(i).getInt("level")
+                                    );
+
+                                    newPlayerList.add(player);
+                                    Log.wtf("player - sc", player.getScore());
+                                    Log.wtf("player - nick", player.getNick());
+                                    Log.wtf("player - lvl", player.getLevel().toString());
+
+                                }
+
+                                ps.setPlayerList(newPlayerList);
+
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
 
-                            ps.setPlayerList(newPlayerList);
+
+
+                            try{
+
+                                JSONArray players = jObject.getJSONArray("score");
+
+                                List<Player> scoreList = new ArrayList<Player>();
+
+                                for(int i = 0; i < players.length(); i++){
+                                    Player player = new Player(
+                                            players.getJSONObject(i).getString("nick"),
+                                            players.getJSONObject(i).getString("score")
+                                    );
+
+                                    scoreList.add(player);
+                                    Log.wtf("player - sc", player.getScore());
+                                    Log.wtf("player - nick", player.getNick());
+
+                                }
+
+                                ps.setScoreList(scoreList);
+
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+
 
 
                             UsersListActivity.listView.invalidate();

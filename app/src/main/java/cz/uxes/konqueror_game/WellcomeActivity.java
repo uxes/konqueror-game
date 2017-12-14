@@ -2,6 +2,7 @@ package cz.uxes.konqueror_game;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,56 +16,31 @@ import com.qozix.tileview.TileView;
 import com.qozix.tileview.markers.MarkerLayout;
 
 
-
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import cz.uxes.konqueror_game.db.Storage;
 import cz.uxes.konqueror_game.network.Realm;
 
 public class WellcomeActivity extends AppCompatActivity {
+
+    public Storage storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Logger.addLogAdapter(new AndroidLogAdapter());
 
-        /*
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wellcome);
-        */
-
-        super.onCreate( savedInstanceState );
-        TileView tileView = new TileView( this );
-        tileView.setSize( 420, 480 );
-
-        //tileView.setScaleLimits( 0, 2 );
-
-        tileView.setShouldRenderWhilePanning( true );
-
-        tileView.addDetailLevel( 1f, "tiles/1/%d-%d.png");
-
-        tileView.defineBounds( 0, 0, 1, 1 );
-
-        addCosik(tileView);
+        ButterKnife.bind(this);
+        this.storage = new Storage(this);
 
 
-        // add a marker listener
-        tileView.setMarkerTapListener( mMarkerTapListener );
-
-
-        setContentView( tileView );
+        MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.sound);
+        mp.start();
     }
 
-    void addCosik(TileView viev){
 
-        Realm[] realms = {new Realm("Pískovna", 0.15, 0.5), new Realm("Zelená", 0.76, 0.26), new Realm("Hliuxov", 0.86, 0.82)};
-
-        for (Realm realm : realms) {
-
-            TextView textView = new TextView(this);
-            textView.setText(realm.name);
-            textView.setTextColor(Color.WHITE);
-            textView.setTag(realm);
-            viev.addMarker(textView, realm.x, realm.y, null, null);
-
-        }
-    }
 
     public void showJoinGame(View view){
         Intent intent = new Intent(this, UsersListActivity.class);
@@ -72,20 +48,18 @@ public class WellcomeActivity extends AppCompatActivity {
 
     }
 
+    @OnClick(R.id.showScores)
+    public void showHistory(View view){
+        Intent intent = new Intent(this, ScoreActivity.class);
+        startActivity(intent);
+        Log.wtf("get", "older");
+    }
 
-    private MarkerLayout.MarkerTapListener mMarkerTapListener = new MarkerLayout.MarkerTapListener() {
-        @Override
-        public void onMarkerTap( View v, int x, int y ) {
-            Toast.makeText( getApplicationContext(), "You tapped a pin " + x + " " + y, Toast.LENGTH_LONG ).show();
+    @OnClick(R.id.quit)
+    public void quitGame(){
 
-            Realm realm = (Realm) v.getTag();
+        finishActivity(0);
+        System.exit(0);
 
-            Log.d("name", realm.name);
-            Log.d("name x", "" +  realm.x);
-            Log.d("name y", "" +  realm.y);
-
-            Log.d("tap", v.toString());
-            Log.d("tap", "You tapped a pin " + x + " " + y);
-        }
-    };
+    }
 }
