@@ -37,7 +37,7 @@ public class UsersListActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.userList);
 
 
-        ws =  new WsConnection("10.0.0.139");
+        ws =  new WsConnection("10.0.0.139", this);
         ws.execute();
         //poprve spadne, jeste neni spojeni
         ws.fetchUsers();

@@ -1,12 +1,15 @@
 package cz.uxes.konqueror_game;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,11 +27,12 @@ import cz.uxes.konqueror_game.network.Realm;
 public class WellcomeActivity extends AppCompatActivity {
 
     public Storage storage;
+    public static WellcomeActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Logger.addLogAdapter(new AndroidLogAdapter());
-
+        this.instance = this;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wellcome);
@@ -38,6 +42,7 @@ public class WellcomeActivity extends AppCompatActivity {
 
         MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.sound);
         mp.start();
+
     }
 
 

@@ -1,6 +1,9 @@
 package cz.uxes.konqueror_game.network;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -18,6 +21,7 @@ import java.util.List;
 
 import cz.uxes.konqueror_game.R;
 import cz.uxes.konqueror_game.UsersListActivity;
+import cz.uxes.konqueror_game.WellcomeActivity;
 
 /**
  * Created by uxes on 18.10.17.
@@ -27,35 +31,24 @@ public class WsConnection extends AsyncTask<String, Void, String> {
 
     public WebSocket webSocket;
     private String serverIP;
+    private Context context;
 
-    public WsConnection(String serverIP) {
+    public WsConnection(String serverIP, Context context) {
         this.serverIP = serverIP;
+        this.context = context;
     }
 
     public void fetchUsers() {
 
         try{
 
-            webSocket.sendText("{\"onlinePlayers\": true}");
+            webSocket.sendText("{\"onlinePlayers\": true, \"nick\": \"ferda\"}");
 
         }
         catch (Exception e){
             e.printStackTrace();
         }
 
-    }
-
-    public void fetchScores(){
-
-
-        try{
-
-            webSocket.sendText("{\"score\": true}");
-
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -72,7 +65,7 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                     .addListener(new WebSocketAdapter() {
                         // A text message arrived from the server.
                         public void onTextMessage(WebSocket websocket, String message) throws JSONException, IOException {
-                            System.out.println(message);
+                            //System.out.println(message);
                             Log.d("cosiks", message);
 
                             JSONObject jObject = new JSONObject(message);
@@ -100,33 +93,63 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                                 ps.setPlayerList(newPlayerList);
 
                             }catch (Exception e){
-                                e.printStackTrace();
+                                //e.printStackTrace();
                             }
 
 
-
+                            //listen when someone offers a game
                             try{
 
-                                JSONArray players = jObject.getJSONArray("score");
+                                Boolean cosik  = jObject.getBoolean("offerGame");
+                                Log.d("nasrani", cosik.toString());
+                                final String opponentNick = jObject.getString("opponent");
 
-                                List<Player> scoreList = new ArrayList<Player>();
+                                //open some modal if you wants to accept game
 
-                                for(int i = 0; i < players.length(); i++){
-                                    Player player = new Player(
-                                            players.getJSONObject(i).getString("nick"),
-                                            players.getJSONObject(i).getString("score")
-                                    );
+                                WellcomeActivity.instance.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new AlertDialog.Builder(context)
+                                                .setTitle("Game offer")
+                                                .setMessage("User " + opponentNick + " wants to play with u")
+                                                .setCancelable(false)
+                                                .setPositiveButton("dobre no", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int whichButton) {
 
-                                    scoreList.add(player);
-                                    Log.wtf("player - sc", player.getScore());
-                                    Log.wtf("player - nick", player.getNick());
+                                                        Log.d("tampere", "poslat potvrtzeni");
+                                                        //moustachify(null, url);
+                                                    }
+                                                })
+                                                .setNegativeButton("nasrat", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                                        Log.d("tampere", "poslat smula");
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                });
 
-                                }
 
-                                ps.setScoreList(scoreList);
+
+
+                                //from modal, call:  {nick: this.nick, acceptOpponent: true, opponent: "Dummy user 1"}
 
                             }catch (Exception e){
-                                e.printStackTrace();
+                                //e.printStackTrace();
+                            }
+
+                            //listen when other side accepts game
+                            try{
+
+                                Boolean cosik  = jObject.getBoolean("gameAccepted");
+                                String opponentNick = jObject.getString("opponent");
+
+                                //open map
+
+                                //from modal, call:  {nick: this.nick, acceptOpponent: true, opponent: "Dummy user 1"}
+
+                            }catch (Exception e){
+                                //e.printStackTrace();
                             }
 
 
