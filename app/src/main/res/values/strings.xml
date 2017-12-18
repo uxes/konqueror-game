@@ -2,4 +2,5 @@
     <string name="app_name">Konqueror-game</string>
     <string name="title_activity_users_list">UsersListActivity</string>
     <string name="title_activity_konqueror_map">Konqueror Map</string>
+    <string name="title_activity_connect">ConnectActivity</string>
 </resources>

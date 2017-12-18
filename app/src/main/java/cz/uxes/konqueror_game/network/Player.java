@@ -8,12 +8,13 @@ public class Player {
     private String nick;
     private String score;
     private Integer level;
+    private String hostname;
 
     public Player() {}
 
-    public Player(String nick, String score) {
+    public Player(String nick, String hostname) {
         this.nick = nick;
-        this.score = score;
+        this.hostname = hostname;
     }
     public Player(String nick, String score, Integer level) {
         this.nick = nick;
@@ -37,5 +38,17 @@ public class Player {
 
     public void levelUp() {
         this.level += 1;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
     }
 }

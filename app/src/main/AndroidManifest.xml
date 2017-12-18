@@ -27,6 +27,11 @@
             android:label="@string/title_activity_konqueror_map"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".ScoreActivity"></activity>
+        <activity
+            android:name=".game.ConnectActivity"
+            android:label="@string/title_activity_connect"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".game.AnswerActivity"></activity>
     </application>
 
 </manifest>

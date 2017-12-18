@@ -1,31 +1,20 @@
 package cz.uxes.konqueror_game;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import butterknife.OnClick;
-import cz.uxes.konqueror_game.map.KonquerMap;
 import cz.uxes.konqueror_game.network.PlayerSingleton;
 import cz.uxes.konqueror_game.network.WsConnection;
-import cz.uxes.konqueror_game.network.Player;
 
 public class UsersListActivity extends AppCompatActivity {
 
-    private WsConnection ws;
+    public static WsConnection ws;
     public static ListView listView;
 
     @Override
@@ -56,8 +45,12 @@ public class UsersListActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "klikls na cosik " + position, Toast.LENGTH_LONG);
                 Log.d("cosik", "kliks.. " + ps.getPlayerList().get(position).getNick());
 
+                ws.webSocket.sendText("{\"chooseUser\": true, \"nick\": \"ferda\", \"opponent\": \"" + ps.getPlayerList().get(position).getNick() + "\"}");
+
+                /*
                 Intent intent = new Intent(getApplicationContext(), KonquerMap.class);
                 startActivity(intent);
+                */
             }
 
         });
