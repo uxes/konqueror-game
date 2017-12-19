@@ -23,6 +23,7 @@ public class WellcomeActivity extends AppCompatActivity {
     public Integer score = 0;
     public Integer triesLeft = 4;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Logger.addLogAdapter(new AndroidLogAdapter());

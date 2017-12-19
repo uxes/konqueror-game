@@ -34,7 +34,6 @@ public class CustomAdapter extends ArrayAdapter<Player> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View viewRow = layoutInflater.inflate(R.layout.user_row, parent, false);
-Log.wtf("kurwa", "co to kurva..");
 
         if(this.layoutResourceId == R.layout.user_row) {
 

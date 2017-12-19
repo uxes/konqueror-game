@@ -9,6 +9,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cz.uxes.konqueror_game.db.Storage;
 import cz.uxes.konqueror_game.network.PlayerSingleton;
 import cz.uxes.konqueror_game.network.WsConnection;
 
@@ -45,7 +46,10 @@ public class UsersListActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "klikls na cosik " + position, Toast.LENGTH_LONG);
                 Log.d("cosik", "kliks.. " + ps.getPlayerList().get(position).getNick());
 
-                ws.webSocket.sendText("{\"chooseUser\": true, \"nick\": \"ferda\", \"opponent\": \"" + ps.getPlayerList().get(position).getNick() + "\"}");
+                String nick = (new Storage(getApplicationContext())).playerInfo().getNick();
+
+
+                ws.webSocket.sendText("{\"chooseUser\": true, \"nick\": \"" + nick + "\", \"opponent\": \"" + ps.getPlayerList().get(position).getNick() + "\"}");
 
                 /*
                 Intent intent = new Intent(getApplicationContext(), KonquerMap.class);

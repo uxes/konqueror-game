@@ -23,6 +23,7 @@ import cz.uxes.konqueror_game.UsersListActivity;
 import cz.uxes.konqueror_game.WellcomeActivity;
 import cz.uxes.konqueror_game.db.Storage;
 import cz.uxes.konqueror_game.game.AnswerActivity;
+import cz.uxes.konqueror_game.map.KonquerMap;
 
 /**
  * Created by uxes on 18.10.17.
@@ -160,7 +161,11 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                                 Boolean cosik  = jObject.getBoolean("gameAccepted");
                                 opponentNick = jObject.getString("opponent");
 
-                                webSocket.sendText("{\"getQuestion\": true, \"nick\": \"" + this.nick + "\", \"opponent\": \"" + opponentNick + "\"}");
+                                Intent intent = new Intent(context.getApplicationContext(), KonquerMap.class);
+                                intent.putExtra("opponentNick", opponentNick);
+                                context.startActivity(intent);
+
+                                //webSocket.sendText("{\"getQuestion\": true, \"nick\": \"" + this.nick + "\", \"opponent\": \"" + opponentNick + "\"}");
 
                             }catch (Exception e){
                                 //e.printStackTrace();
@@ -206,6 +211,7 @@ public class WsConnection extends AsyncTask<String, Void, String> {
 
                                 Boolean cosik  = jObject.getBoolean("randomQuestion");
                                 opponentNick = jObject.getString("opponent");
+                                final Integer realm = jObject.getInt("realm");
 
                                 JSONObject questionObj = jObject.getJSONObject("question");
                                 final JSONArray players = questionObj.getJSONArray("answers");
@@ -223,6 +229,8 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                                         Intent intent = new Intent(context, AnswerActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         intent.putExtra("question", question);
+                                        intent.putExtra("realm", realm);
+                                        intent.putExtra("opponent", opponentNick);
                                         try {
                                             intent.putExtra("answer0", players.getString(0));
                                             intent.putExtra("answer1", players.getString(1));
@@ -259,7 +267,11 @@ public class WsConnection extends AsyncTask<String, Void, String> {
         return null;
     }
 
-    public void getQuestion() {
-        webSocket.sendText("{\"getQuestion\": true, \"nick\": \"" + this.nick + "\", \"opponent\": \"" + this.opponentNick + "\"}");
+    public void getQuestion(Integer realm) {
+        webSocket.sendText("{\"getQuestion\": true, \"nick\": \"" + this.nick + "\", \"opponent\": \"" + this.opponentNick + "\", \"realm\": " + realm + "}");
+    }
+
+    public void incrementUserLevel() {
+        webSocket.sendText("{\"incrementUserLevel\": true, \"nick\": \"" + this.nick + "\"}");
     }
 }

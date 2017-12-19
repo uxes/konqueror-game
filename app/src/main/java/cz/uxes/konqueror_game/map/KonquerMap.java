@@ -12,7 +12,11 @@ import android.widget.Toast;
 import com.qozix.tileview.TileView;
 import com.qozix.tileview.markers.MarkerLayout;
 
+import cz.uxes.konqueror_game.UsersListActivity;
+import cz.uxes.konqueror_game.WellcomeActivity;
+import cz.uxes.konqueror_game.db.Storage;
 import cz.uxes.konqueror_game.network.Realm;
+import cz.uxes.konqueror_game.network.WsConnection;
 
 /**
  * Created by uxes on 6.12.17.
@@ -20,8 +24,10 @@ import cz.uxes.konqueror_game.network.Realm;
 
 public class KonquerMap extends Activity {
 
-    Realm[] realms = {new Realm("Pískovna", 0.25, 0.25), new Realm("Hliuxov", 0.76, 0.26), new Realm("Zelená", 0.96, 0.92)};
+    public static Realm[] realms = {new Realm(0, "Pískovna", 0.25, 0.25), new Realm(2, "Hliuxov", 0.76, 0.26), new Realm(3, "Zelená", 0.96, 0.92)};
     private TileView tileView;
+    private String opponentNick;
+    private String nick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,10 @@ public class KonquerMap extends Activity {
 
         addCosik(tileView);
 
+        opponentNick = getIntent().getStringExtra("opponentNick");
+        Storage storage = new Storage(getApplicationContext());
+        nick = storage.playerInfo().getNick();
+
 
         // add a marker listener
         tileView.setMarkerTapListener( mMarkerTapListener );
@@ -53,7 +63,6 @@ public class KonquerMap extends Activity {
 
     void addCosik(TileView viev){
 
-        Realm[] realms = {new Realm("Pískovna", 0.15, 0.5), new Realm("Zelená", 0.76, 0.26), new Realm("Hliuxov", 0.86, 0.82)};
 
         for (Realm realm : realms) {
 
@@ -81,6 +90,8 @@ public class KonquerMap extends Activity {
 
             Log.d("tap", v.toString());
             Log.d("tap", "You tapped a pin " + x + " " + y);
+
+            UsersListActivity.ws.webSocket.sendText("{\"getQuestion\": true, \"nick\": \"" + nick + "\", \"opponent\": \"" + opponentNick + "\", \"realm\": \"" + realm.id + "\"}");
         }
     };
 

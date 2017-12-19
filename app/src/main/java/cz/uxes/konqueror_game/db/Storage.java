@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.uxes.konqueror_game.network.Player;
+import cz.uxes.konqueror_game.network.Realm;
 
 /**
  * Created by uxes on 14.12.17.
@@ -35,9 +36,10 @@ public class Storage extends SQLiteOpenHelper {
         values.put("id", Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
         values.put("name", "Franta");
         values.put("hostname", "10.0.0.139");
-
-
         db.insert("user", null, values);
+
+        db.close();
+
     }
 
     @Override
@@ -50,18 +52,14 @@ public class Storage extends SQLiteOpenHelper {
 
     public Player playerInfo(){
         SQLiteDatabase db = this.getReadableDatabase();
-        onUpgrade(db, 0, 0);
+        //onUpgrade(db, 0, 0);
 
         Cursor cursor = db.rawQuery("select * from user where id = ?", new String[] {Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID)});
         cursor.moveToFirst();
 
-        Log.d("kurva", cursor.getString(cursor.getColumnIndex("id")));
-        Log.d("kurva", cursor.getString(cursor.getColumnIndex("name")));
-        Log.d("kurva", cursor.getString(cursor.getColumnIndex("hostname")));
-
+        db.close();
 
         return new Player(cursor.getString(cursor.getColumnIndex("name")), cursor.getString(cursor.getColumnIndex("hostname")));
-        //return new Player(cursor.getString(cursor.getColumnIndex("name")));
 
     }
 
@@ -81,6 +79,8 @@ public class Storage extends SQLiteOpenHelper {
         values.put("name", player.getNick());
         values.put("hostname", player.getHostname());
         db.update("user", values, "id='" + Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID) + "'", null);
+
+        db.close();
 
     }
 }

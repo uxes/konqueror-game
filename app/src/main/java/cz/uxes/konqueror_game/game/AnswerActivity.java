@@ -20,6 +20,8 @@ import butterknife.OnClick;
 import cz.uxes.konqueror_game.R;
 import cz.uxes.konqueror_game.UsersListActivity;
 import cz.uxes.konqueror_game.WellcomeActivity;
+import cz.uxes.konqueror_game.db.Storage;
+import cz.uxes.konqueror_game.map.KonquerMap;
 import cz.uxes.konqueror_game.network.WsConnection;
 
 import static java.lang.Boolean.FALSE;
@@ -29,6 +31,8 @@ public class AnswerActivity extends AppCompatActivity {
 
     final boolean LOOSER = TRUE;
     final boolean WINNER = FALSE;
+
+    private Integer actualRealm;
 
     private List<String> answers;
     private Context context;
@@ -53,13 +57,23 @@ public class AnswerActivity extends AppCompatActivity {
 
             answers.add(i, extras.getString("answer" + i));
 
-            Log.d("keke?", answers.get(i));
         }
 
         //lets make a copy of answers and set em randomly (cause originally item on position 0 is right)
         List<String> randomizedAnswers = new ArrayList<String>(answers);
         long seed = System.nanoTime();
         Collections.shuffle(randomizedAnswers, new Random(seed));
+
+        Storage storage = new Storage(this);
+
+
+        ((TextView) findViewById(R.id.viewOpponent)).setText("Opponent: " + extras.getString("opponent"));
+        ((TextView) findViewById(R.id.viewNick)).setText("Nick: " + storage.playerInfo().getNick());
+        ((TextView) findViewById(R.id.viewAnswers)).setText("Answers left: " + WellcomeActivity.instance.triesLeft);
+        ((TextView) findViewById(R.id.viewScore)).setText("Score: " + WellcomeActivity.instance.score);
+        ((TextView) findViewById(R.id.viewRealm)).setText("Realm: " + KonquerMap.realms[extras.getInt("realm")].name);
+
+        actualRealm = extras.getInt("realm");
 
 
         ((Button) findViewById(R.id.answer0)).setText(randomizedAnswers.get(0));
@@ -84,7 +98,7 @@ public class AnswerActivity extends AppCompatActivity {
 
 
         new AlertDialog.Builder(this.context)
-                .setTitle("Game offer")
+                .setTitle("Game over")
                 .setMessage(message)
                 .setCancelable(false)
                 .setNegativeButton("close", new DialogInterface.OnClickListener() {
@@ -120,15 +134,24 @@ public class AnswerActivity extends AppCompatActivity {
 
         if(WellcomeActivity.instance.score >= 4){
             this.gameOver(WINNER);
+
+            //todo: navyšit score na serveru
+
+            UsersListActivity.ws.incrementUserLevel();
+
+            //todo: navyšit score loklně
+
+            //todo: dodat aktualni realm do pole vyhranych
+
+            //todo: zabarvit jinou barvy ty realmy jenž jsou zabrany
+
         }
         else if(WellcomeActivity.instance.triesLeft < 0){
             this.gameOver(LOOSER);
         }
         else{
-            UsersListActivity.ws.getQuestion();
+            UsersListActivity.ws.getQuestion(actualRealm);
         }
-
-
 
 
     }
