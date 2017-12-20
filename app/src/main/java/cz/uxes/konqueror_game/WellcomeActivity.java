@@ -16,6 +16,7 @@ import butterknife.OnClick;
 import cz.uxes.konqueror_game.db.Storage;
 import cz.uxes.konqueror_game.game.ConnectActivity;
 import cz.uxes.konqueror_game.network.Player;
+import cz.uxes.konqueror_game.network.Realm;
 
 public class WellcomeActivity extends AppCompatActivity {
 

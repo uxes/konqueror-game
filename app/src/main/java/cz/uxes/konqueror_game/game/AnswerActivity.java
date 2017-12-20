@@ -143,15 +143,17 @@ public class AnswerActivity extends AppCompatActivity {
         if(WellcomeActivity.instance.myself.getScore() >= 4){
             this.gameOver(WINNER);
 
-            //todo: navyšit score na serveru
 
             UsersListActivity.ws.incrementUserLevel();
 
-            //todo: navyšit score loklně
 
             WellcomeActivity.instance.myself.scoreUp();
 
             //todo: dodat aktualni realm do pole vyhranych
+
+            KonquerMap.realms[actualRealm].setKonquered();
+
+            KonquerMap.cosikRealms();
 
 
 
@@ -165,7 +167,7 @@ public class AnswerActivity extends AppCompatActivity {
         else{
             UsersListActivity.ws.getQuestion(actualRealm);
         }
-
+//todo: on win -> nastravit na true dobytý realm -> zabarvit
 
     }
 }

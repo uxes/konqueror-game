@@ -69,7 +69,6 @@ public class Storage extends SQLiteOpenHelper {
 
     public List<Player> getScores() {
 
-        //todo: akutalně pseudo fetching
         List<Player> scores = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();

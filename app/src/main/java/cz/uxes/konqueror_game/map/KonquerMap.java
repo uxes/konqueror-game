@@ -16,7 +16,6 @@ import cz.uxes.konqueror_game.UsersListActivity;
 import cz.uxes.konqueror_game.WellcomeActivity;
 import cz.uxes.konqueror_game.db.Storage;
 import cz.uxes.konqueror_game.network.Realm;
-import cz.uxes.konqueror_game.network.WsConnection;
 
 /**
  * Created by uxes on 6.12.17.
@@ -25,7 +24,7 @@ import cz.uxes.konqueror_game.network.WsConnection;
 public class KonquerMap extends Activity {
 
     public static Realm[] realms = {new Realm(0, "Pískovna", 0.25, 0.25), new Realm(2, "Hliuxov", 0.76, 0.26), new Realm(3, "Zelená", 0.96, 0.92)};
-    private TileView tileView;
+    public static TileView tileView;
     private String opponentNick;
     private String nick;
 
@@ -36,7 +35,7 @@ public class KonquerMap extends Activity {
 
 
         super.onCreate( savedInstanceState );
-        TileView tileView = new TileView( this );
+        tileView = new TileView( this );
         tileView.setSize( 420, 480 );
 
         instance = this;
@@ -49,7 +48,7 @@ public class KonquerMap extends Activity {
 
         tileView.defineBounds( 0, 0, 1, 1 );
 
-        addCosik(tileView);
+        cosikRealms();
 
         opponentNick = getIntent().getStringExtra("opponentNick");
         Storage storage = new Storage(getApplicationContext());
@@ -65,16 +64,22 @@ public class KonquerMap extends Activity {
 
     }
 
-    void addCosik(TileView viev){
+    public static void cosikRealms(){
 
+        //tileView.removeMarker();
 
         for (Realm realm : realms) {
 
-            TextView textView = new TextView(this);
+            TextView textView = new TextView(instance);
             textView.setText(realm.name);
-            textView.setTextColor(Color.WHITE);
+            if(realm.isKonquered()){
+                textView.setTextColor(Color.BLACK);
+            }
+            else{
+                textView.setTextColor(Color.WHITE);
+            }
             textView.setTag(realm);
-            viev.addMarker(textView, realm.x, realm.y, null, null);
+            tileView.addMarker(textView, realm.x, realm.y, null, null);
 
         }
     }
@@ -84,32 +89,16 @@ public class KonquerMap extends Activity {
     private MarkerLayout.MarkerTapListener mMarkerTapListener = new MarkerLayout.MarkerTapListener() {
         @Override
         public void onMarkerTap(View v, int x, int y ) {
-            Toast.makeText( getApplicationContext(), "You tapped a pin " + x + " " + y, Toast.LENGTH_LONG ).show();
-
             Realm realm = (Realm) v.getTag();
+            if(realm.isKonquered()){
+                Toast.makeText( getApplicationContext(), "This realm is already konquered", Toast.LENGTH_LONG ).show();
+            }
+            else{
+                UsersListActivity.ws.webSocket.sendText("{\"getQuestion\": true, \"nick\": \"" + nick + "\", \"opponent\": \"" + opponentNick + "\", \"realm\": \"" + realm.id + "\"}");
+            }
 
-            Log.d("name", realm.name);
-            Log.d("name x", "" +  realm.x);
-            Log.d("name y", "" +  realm.y);
-
-            Log.d("tap", v.toString());
-            Log.d("tap", "You tapped a pin " + x + " " + y);
-
-            UsersListActivity.ws.webSocket.sendText("{\"getQuestion\": true, \"nick\": \"" + nick + "\", \"opponent\": \"" + opponentNick + "\", \"realm\": \"" + realm.id + "\"}");
         }
     };
 
-
-    private void setRealms(){
-
-        for (Realm realm : realms) {
-
-            TextView textView = new TextView(this);
-            textView.setText(realm.name);
-            tileView.addMarker(textView, 0.25, 0.75, null, null);
-
-        }
-
-    }
 
 }
