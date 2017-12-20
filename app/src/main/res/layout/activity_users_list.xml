@@ -66,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
-            android:text="Online players: 42"
+            android:text="Online players: .."
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginEnd="16dp"
             app:layout_constraintTop_toTopOf="parent"

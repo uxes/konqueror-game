@@ -29,6 +29,8 @@ public class KonquerMap extends Activity {
     private String opponentNick;
     private String nick;
 
+    public static KonquerMap instance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -36,6 +38,8 @@ public class KonquerMap extends Activity {
         super.onCreate( savedInstanceState );
         TileView tileView = new TileView( this );
         tileView.setSize( 420, 480 );
+
+        instance = this;
 
         //tileView.setScaleLimits( 0, 2 );
 
@@ -107,6 +111,5 @@ public class KonquerMap extends Activity {
         }
 
     }
-
 
 }

@@ -88,12 +88,11 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                                 for(int i = 0; i < players.length(); i++){
                                     Player player = new Player(
                                             players.getJSONObject(i).getString("nick"),
-                                            players.getJSONObject(i).getString("score"),
-                                            players.getJSONObject(i).getInt("level")
+                                            players.getJSONObject(i).getInt("level"),
+                                            serverIP
                                     );
 
                                     newPlayerList.add(player);
-                                    Log.wtf("player - sc", player.getScore());
                                     Log.wtf("player - nick", player.getNick());
                                     Log.wtf("player - lvl", player.getLevel().toString());
 
@@ -182,8 +181,44 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                                     @Override
                                     public void run() {
                                         new AlertDialog.Builder(context)
-                                                .setTitle("Game offer")
+                                                .setTitle("Leaving")
                                                 .setMessage("User " + opponentNick + " has left the game")
+                                                .setCancelable(false)
+                                                .setPositiveButton("couž", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                                        Log.d("tampere", "couž potvrtzeni");
+                                                    }
+                                                })
+                                                .setNegativeButton("couž", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                });
+
+
+
+                            }catch (Exception e){
+                                //e.printStackTrace();
+                            }
+
+                            //listen when someone's quitting game
+                            try{
+
+                                Boolean cosik  = jObject.getBoolean("won");
+                                opponentNick = jObject.getString("opponent");
+
+                                WellcomeActivity.instance.myself.levelUp();
+
+                                WellcomeActivity.instance.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new AlertDialog.Builder(context)
+                                                .setTitle("Winner")
+                                                .setMessage("You're a winner, " + opponentNick + " is a looser")
                                                 .setCancelable(false)
                                                 .setPositiveButton("couž", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -312,5 +347,9 @@ public class WsConnection extends AsyncTask<String, Void, String> {
 
     public void quitGame() {
         webSocket.sendText("{\"quitting\": true, \"nick\": \"" + this.nick + "\", \"opponent\": \"" + opponentNick + "\"}");
+    }
+
+    public void lostGame() {
+        webSocket.sendText("{\"lostGame\": true, \"nick\": \"" + this.nick + "\", \"opponent\": \"" + opponentNick + "\"}");
     }
 }

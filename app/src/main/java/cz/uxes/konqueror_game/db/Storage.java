@@ -28,7 +28,7 @@ public class Storage extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE user " + "(id TEXT PRIMARY KEY, name TEXT, type INTEGER, hostname TEXT)");
+        db.execSQL("CREATE TABLE user " + "(id TEXT PRIMARY KEY, name TEXT, type INTEGER, hostname TEXT, level INTEGER)");
         db.execSQL("CREATE TABLE server " + "(id INTEGER PRIMARY KEY, address TEXT, port INTEGER)");
         db.execSQL("CREATE TABLE score " + "(id INTEGER PRIMARY KEY, name TEXT, score INTEGER)");
 
@@ -36,9 +36,10 @@ public class Storage extends SQLiteOpenHelper {
         values.put("id", Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
         values.put("name", "Franta");
         values.put("hostname", "10.0.0.139");
+        values.put("level", "0");
         db.insert("user", null, values);
 
-        db.close();
+        //db.close();
 
     }
 
@@ -51,15 +52,18 @@ public class Storage extends SQLiteOpenHelper {
     }
 
     public Player playerInfo(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        //onUpgrade(db, 0, 0);
 
-        Cursor cursor = db.rawQuery("select * from user where id = ?", new String[] {Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID)});
+        SQLiteDatabase db = this.getReadableDatabase();
+        onUpgrade(db, 0, 0);
+
+        String id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        Cursor cursor = db.rawQuery("select * from user where id = ?", new String[] {id});
         cursor.moveToFirst();
 
-        db.close();
+        //db.close();
 
-        return new Player(cursor.getString(cursor.getColumnIndex("name")), cursor.getString(cursor.getColumnIndex("hostname")));
+        return new Player(cursor.getString(cursor.getColumnIndex("name")), cursor.getString(cursor.getColumnIndex("hostname")), id);
 
     }
 
@@ -67,8 +71,18 @@ public class Storage extends SQLiteOpenHelper {
 
         //todo: akutalně pseudo fetching
         List<Player> scores = new ArrayList<>();
-        scores.add(0, new Player("pepa", "11"));
-        scores.add(1, new Player("alexandr", "66"));
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from user", new String[]{});
+
+        while (cursor.isAfterLast() == false){
+            scores.add(new Player(//todo, fixme: padá to hned po kliknu na menu
+                    cursor.getString(cursor.getColumnIndex("name")),
+                    cursor.getInt(cursor.getColumnIndex("level")),
+                    cursor.getString(cursor.getColumnIndex("hostname"))
+            ));
+            cursor.moveToNext();
+        }
         return scores;
     }
 
@@ -78,7 +92,16 @@ public class Storage extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("name", player.getNick());
         values.put("hostname", player.getHostname());
-        db.update("user", values, "id='" + Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID) + "'", null);
+        values.put("level", player.getLevel());
+        String where;
+        try{
+            where = "id = '" +  player.getId() + "'";
+        }
+        catch (Exception e){
+            where = "name = '" +  player.getNick() + "'";
+        }
+
+        db.update("user", values, where, null);
 
         db.close();
 

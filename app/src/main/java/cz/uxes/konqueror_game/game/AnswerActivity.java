@@ -70,7 +70,7 @@ public class AnswerActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.viewOpponent)).setText("Opponent: " + extras.getString("opponent"));
         ((TextView) findViewById(R.id.viewNick)).setText("Nick: " + storage.playerInfo().getNick());
         ((TextView) findViewById(R.id.viewAnswers)).setText("Answers left: " + WellcomeActivity.instance.triesLeft);
-        ((TextView) findViewById(R.id.viewScore)).setText("Score: " + WellcomeActivity.instance.score);
+        ((TextView) findViewById(R.id.viewScore)).setText("Score: " + WellcomeActivity.instance.myself.getScore());
         ((TextView) findViewById(R.id.viewRealm)).setText("Realm: " + KonquerMap.realms[extras.getInt("realm")].name);
 
         actualRealm = extras.getInt("realm");
@@ -89,16 +89,15 @@ public class AnswerActivity extends AppCompatActivity {
     @Override
     protected void onPause(){
         super.onPause();
-
         finish();
-
     }
 
     /**
      * @param status 1 = winner, 0 = looser
      */
     public void gameOver(boolean status){
-        WellcomeActivity.instance.score = 0;
+        WellcomeActivity.instance.myself.clearScore();
+
         WellcomeActivity.instance.triesLeft = 4;
 
         String message = (status == LOOSER ? "You'v Lost" : "You won");
@@ -118,6 +117,8 @@ public class AnswerActivity extends AppCompatActivity {
 
     @OnClick(R.id.exitAnswer)
     public void exitAnswe(View view){
+        KonquerMap.instance.finish();
+
         Log.d("close", "close me plz");
         finish();
         finishActivity(0);
@@ -127,19 +128,19 @@ public class AnswerActivity extends AppCompatActivity {
 
         Button butt = (Button) view;
 
-        WellcomeActivity.instance.triesLeft -= 1;
+
 
 
         if(butt.getText() == answers.get(0)){
             Log.d("jo", "tohle je spravna odpoved");
-            WellcomeActivity.instance.score += 1;
+            WellcomeActivity.instance.myself.scoreUp();
         }
         else{
             Log.d("jo", "tohle neni spravna odpoved");
+            WellcomeActivity.instance.triesLeft -= 1;
         }
 
-
-        if(WellcomeActivity.instance.score >= 4){
+        if(WellcomeActivity.instance.myself.getScore() >= 4){
             this.gameOver(WINNER);
 
             //todo: navyšit score na serveru
@@ -148,13 +149,18 @@ public class AnswerActivity extends AppCompatActivity {
 
             //todo: navyšit score loklně
 
+            WellcomeActivity.instance.myself.scoreUp();
+
             //todo: dodat aktualni realm do pole vyhranych
+
+
 
             //todo: zabarvit jinou barvy ty realmy jenž jsou zabrany
 
         }
         else if(WellcomeActivity.instance.triesLeft < 0){
             this.gameOver(LOOSER);
+            UsersListActivity.ws.lostGame();
         }
         else{
             UsersListActivity.ws.getQuestion(actualRealm);

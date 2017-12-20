@@ -15,13 +15,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cz.uxes.konqueror_game.db.Storage;
 import cz.uxes.konqueror_game.game.ConnectActivity;
+import cz.uxes.konqueror_game.network.Player;
 
 public class WellcomeActivity extends AppCompatActivity {
 
     public Storage storage;
     public static WellcomeActivity instance;
-    public Integer score = 0;
     public Integer triesLeft = 4;
+    public Player myself;
 
 
     @Override
@@ -37,11 +38,12 @@ public class WellcomeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         this.storage = new Storage(this);
 
+        myself = storage.playerInfo();
+
 
         MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.sound);
         mp.start();
 
-        Log.d("nick?", this.storage.playerInfo().getNick());
 
     }
 
@@ -72,6 +74,7 @@ public class WellcomeActivity extends AppCompatActivity {
     public void quitGame(){
 
         UsersListActivity.ws.quitGame();
+        storage.updatePlayer(myself);
 
         finishActivity(0);
         System.exit(0);
