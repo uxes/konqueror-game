@@ -23,7 +23,7 @@ import cz.uxes.konqueror_game.network.Realm;
 
 public class KonquerMap extends Activity {
 
-    public static Realm[] realms = {new Realm(0, "Pískovna", 0.25, 0.25), new Realm(2, "Hliuxov", 0.76, 0.26), new Realm(3, "Zelená", 0.96, 0.92)};
+    public static Realm[] realms = {new Realm(0, "Pískovna", 0.25, 0.25), new Realm(1, "Hliuxov", 0.76, 0.26), new Realm(2, "Zelená", 0.86, 0.92)};
     public static TileView tileView;
     private String opponentNick;
     private String nick;
@@ -40,7 +40,7 @@ public class KonquerMap extends Activity {
 
         instance = this;
 
-        //tileView.setScaleLimits( 0, 2 );
+        tileView.setScaleLimits( 0, 4 );
 
         tileView.setShouldRenderWhilePanning( true );
 

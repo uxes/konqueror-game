@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cz.uxes.konqueror_game.db.Storage;
 import cz.uxes.konqueror_game.game.ConnectActivity;
+import cz.uxes.konqueror_game.map.KonquerMap;
 import cz.uxes.konqueror_game.network.Player;
 import cz.uxes.konqueror_game.network.Realm;
 
@@ -28,6 +29,8 @@ public class WellcomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         Logger.addLogAdapter(new AndroidLogAdapter());
         this.instance = this;
 
