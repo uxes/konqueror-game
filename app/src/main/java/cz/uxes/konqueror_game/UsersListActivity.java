@@ -1,6 +1,8 @@
 package cz.uxes.konqueror_game;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +20,7 @@ public class UsersListActivity extends AppCompatActivity {
     public static WsConnection ws;
     public static ListView listView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +29,7 @@ public class UsersListActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.userList);
 
-
-        ws =  new WsConnection("10.0.0.139", this);
+        ws =  new WsConnection((new Storage(getApplicationContext())).playerInfo().getHostname(), this);
         ws.execute();
         //poprve spadne, jeste neni spojeni
         ws.fetchUsers();
@@ -63,6 +65,8 @@ public class UsersListActivity extends AppCompatActivity {
 
 
     public void loadPlayers(View view){
+
+
 
         Log.wtf("invalidace", "load players");
 

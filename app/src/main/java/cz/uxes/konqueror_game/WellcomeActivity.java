@@ -46,6 +46,14 @@ public class WellcomeActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+
+        UsersListActivity.ws.quitGame();
+    }
+
+
 
     public void showJoinGame(View view){
         Intent intent = new Intent(this, ConnectActivity.class);
@@ -62,6 +70,8 @@ public class WellcomeActivity extends AppCompatActivity {
 
     @OnClick(R.id.quit)
     public void quitGame(){
+
+        UsersListActivity.ws.quitGame();
 
         finishActivity(0);
         System.exit(0);

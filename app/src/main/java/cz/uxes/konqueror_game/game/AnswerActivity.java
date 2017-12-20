@@ -86,6 +86,13 @@ public class AnswerActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        finish();
+
+    }
 
     /**
      * @param status 1 = winner, 0 = looser

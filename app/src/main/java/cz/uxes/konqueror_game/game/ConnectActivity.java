@@ -12,6 +12,7 @@ import cz.uxes.konqueror_game.R;
 import cz.uxes.konqueror_game.UsersListActivity;
 import cz.uxes.konqueror_game.db.Storage;
 import cz.uxes.konqueror_game.network.Player;
+import cz.uxes.konqueror_game.network.WsConnection;
 
 public class ConnectActivity extends AppCompatActivity {
 
@@ -35,8 +36,9 @@ public class ConnectActivity extends AppCompatActivity {
         //ziskat nove udaje, zapsat do db
         Player player = new Player();
 
+        String hostname = ((TextView) findViewById(R.id.connectHostname) ).getText().toString();
         player.setNick( ( (TextView) findViewById(R.id.connectNick) ).getText().toString() );
-        player.setHostname( ( (TextView) findViewById(R.id.connectHostname) ).getText().toString() );
+        player.setHostname( hostname );
         storage.updatePlayer(player);
 
 
@@ -47,6 +49,9 @@ public class ConnectActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, UsersListActivity.class);
         startActivity(intent);
+
+        WsConnection ws = new WsConnection(hostname, this);
+        ws.fetchUsers();
     }
 
 }

@@ -64,10 +64,11 @@ public class WsConnection extends AsyncTask<String, Void, String> {
         try{
 
             webSocket = new WebSocketFactory()
-                    .setConnectionTimeout(5000)
+                    .setConnectionTimeout(0)
                     .createSocket("ws://" + serverIP + ":8124")
                     .addProtocol("connection")
                     .addListener(new WebSocketAdapter() {
+
 
                         String nick = (new Storage(context)).playerInfo().getNick();
 
@@ -149,7 +150,6 @@ public class WsConnection extends AsyncTask<String, Void, String> {
 
 
 
-                                //from modal, call:  {nick: this.nick, acceptOpponent: true, opponent: "Dummy user 1"}
 
                             }catch (Exception e){
                                 //e.printStackTrace();
@@ -165,7 +165,42 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                                 intent.putExtra("opponentNick", opponentNick);
                                 context.startActivity(intent);
 
-                                //webSocket.sendText("{\"getQuestion\": true, \"nick\": \"" + this.nick + "\", \"opponent\": \"" + opponentNick + "\"}");
+
+                            }catch (Exception e){
+                                //e.printStackTrace();
+                            }
+
+                            //listen when someone's quitting game
+                            try{
+
+                                Boolean cosik  = jObject.getBoolean("quitting");
+                                opponentNick = jObject.getString("opponent");
+
+                                Log.d("damn","he's leaving -.-");
+
+                                WellcomeActivity.instance.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new AlertDialog.Builder(context)
+                                                .setTitle("Game offer")
+                                                .setMessage("User " + opponentNick + " has left the game")
+                                                .setCancelable(false)
+                                                .setPositiveButton("couž", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                                        Log.d("tampere", "couž potvrtzeni");
+                                                    }
+                                                })
+                                                .setNegativeButton("couž", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                });
+
+
 
                             }catch (Exception e){
                                 //e.printStackTrace();
@@ -273,5 +308,9 @@ public class WsConnection extends AsyncTask<String, Void, String> {
 
     public void incrementUserLevel() {
         webSocket.sendText("{\"incrementUserLevel\": true, \"nick\": \"" + this.nick + "\"}");
+    }
+
+    public void quitGame() {
+        webSocket.sendText("{\"quitting\": true, \"nick\": \"" + this.nick + "\", \"opponent\": \"" + opponentNick + "\"}");
     }
 }
