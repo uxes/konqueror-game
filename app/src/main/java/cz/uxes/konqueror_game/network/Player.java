@@ -13,6 +13,8 @@ public class Player {
 
     public Player() {
         this.id = null;
+        this.score = 0;
+        this.level = 0;
     }
 
     public Player(String nick, String hostname, String id) {

@@ -7,7 +7,10 @@
     tools:context="cz.uxes.konqueror_game.ScoreActivity">
 
 
-    <include layout="@layout/content_users_list"
-        android:id="@+id/include" />
-
+    <ListView
+        android:id="@+id/historyList"
+        android:layout_width="368dp"
+        android:layout_height="495dp"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp" />
 </android.support.constraint.ConstraintLayout>

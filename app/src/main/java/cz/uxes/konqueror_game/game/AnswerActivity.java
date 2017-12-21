@@ -149,15 +149,10 @@ public class AnswerActivity extends AppCompatActivity {
 
             WellcomeActivity.instance.myself.scoreUp();
 
-            //todo: dodat aktualni realm do pole vyhranych
-
             KonquerMap.realms[actualRealm].setKonquered();
 
             KonquerMap.cosikRealms();
 
-
-
-            //todo: zabarvit jinou barvy ty realmy jenž jsou zabrany
 
         }
         else if(WellcomeActivity.instance.triesLeft < 0){
@@ -167,7 +162,6 @@ public class AnswerActivity extends AppCompatActivity {
         else{
             UsersListActivity.ws.getQuestion(actualRealm);
         }
-//todo: on win -> nastravit na true dobytý realm -> zabarvit
 
     }
 }

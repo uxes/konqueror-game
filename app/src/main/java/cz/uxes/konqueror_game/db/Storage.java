@@ -68,18 +68,22 @@ public class Storage extends SQLiteOpenHelper {
     }
 
     public List<Player> getScores() {
+        SQLiteDatabase db = this.getReadableDatabase();
 
         List<Player> scores = new ArrayList<>();
 
-        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from user", new String[]{});
+        cursor.moveToFirst();
 
         while (cursor.isAfterLast() == false){
-            scores.add(new Player(//todo, fixme: padá to hned po kliknu na menu
+
+
+            scores.add(new Player(
                     cursor.getString(cursor.getColumnIndex("name")),
                     cursor.getInt(cursor.getColumnIndex("level")),
                     cursor.getString(cursor.getColumnIndex("hostname"))
             ));
+
             cursor.moveToNext();
         }
         return scores;

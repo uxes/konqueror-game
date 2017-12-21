@@ -35,28 +35,15 @@ public class CustomAdapter extends ArrayAdapter<Player> {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View viewRow = layoutInflater.inflate(R.layout.user_row, parent, false);
 
-        if(this.layoutResourceId == R.layout.user_row) {
 
+        Player player = players.get(position);
+        TextView userName = (TextView) viewRow.findViewById(R.id.userName);
+        userName.setText(player.getNick());
 
-            Player player = players.get(position);
-            TextView userName = (TextView) viewRow.findViewById(R.id.userName);
-            userName.setText(player.getNick());
+        TextView userLevel = (TextView) viewRow.findViewById(R.id.userLevel);
+        userLevel.setText(player.getLevel().toString());
 
-            TextView userLevel = (TextView) viewRow.findViewById(R.id.userLevel);
-            userLevel.setText(player.getLevel().toString());
-        }
-        else if(this.layoutResourceId == R.layout.activity_score){
-
-
-            Player player = players.get(position);
-            TextView userName = (TextView) viewRow.findViewById(R.id.userName);
-            userName.setText(player.getNick());
-
-
-            TextView userScore = (TextView) viewRow.findViewById(R.id.userLevel);
-            userScore.setText(player.getScore());
-
-        }
+        Log.d("PLejer", player.getLevel().toString());
 
         return viewRow;
 
