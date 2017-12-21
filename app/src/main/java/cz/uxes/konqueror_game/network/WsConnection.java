@@ -75,7 +75,6 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                         // A text message arrived from the server.
                         public void onTextMessage(WebSocket websocket, String message) throws JSONException, IOException {
                             //System.out.println(message);
-                            Log.d("cosiks", message);
 
                             JSONObject jObject = new JSONObject(message);
 
@@ -93,8 +92,6 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                                     );
 
                                     newPlayerList.add(player);
-                                    Log.wtf("player - nick", player.getNick());
-                                    Log.wtf("player - lvl", player.getLevel().toString());
 
                                 }
 
@@ -109,7 +106,6 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                             try{
 
                                 Boolean cosik  = jObject.getBoolean("offerGame");
-                                Log.d("nasrani", cosik.toString());
                                 opponentNick = jObject.getString("opponent");
 
                                 //open some modal if you wants to accept game
@@ -121,20 +117,20 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                                                 .setTitle("Game offer")
                                                 .setMessage("User " + opponentNick + " wants to play with u")
                                                 .setCancelable(false)
-                                                .setPositiveButton("dobre no", new DialogInterface.OnClickListener() {
+                                                .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
 
 
                                                     String nick = (new Storage(context)).playerInfo().getNick();
 
                                                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                                                        Log.d("tampere", "poslat potvrtzeni");
+                                                        Log.d("Accept", "poslat potvrtzeni");
                                                         //moustachify(null, url);
 
                                                         webSocket.sendText("{\"acceptOpponent\": true, \"nick\": \"" + this.nick + "\", \"opponent\": \"" + opponentNick + "\"}");
                                                     }
                                                 })
-                                                .setNegativeButton("nasrat", new DialogInterface.OnClickListener() {
+                                                .setNegativeButton("Refuse", new DialogInterface.OnClickListener() {
                                                     String nick = (new Storage(context)).playerInfo().getNick();
 
                                                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -184,7 +180,7 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                                                 .setTitle("Leaving")
                                                 .setMessage("User " + opponentNick + " has left the game")
                                                 .setCancelable(false)
-                                                .setPositiveButton("couž", new DialogInterface.OnClickListener() {
+                                                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int whichButton) {
 
                                                         Log.d("tampere", "couž potvrtzeni");
@@ -256,13 +252,13 @@ public class WsConnection extends AsyncTask<String, Void, String> {
                                                 .setTitle("Game offer")
                                                 .setMessage("User " + opponentNick + " refused to play with u")
                                                 .setCancelable(false)
-                                                .setPositiveButton("couž", new DialogInterface.OnClickListener() {
+                                                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int whichButton) {
 
                                                         Log.d("tampere", "poslat potvrtzeni");
                                                     }
                                                 })
-                                                .setNegativeButton("close", new DialogInterface.OnClickListener() {
+                                                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int whichButton) {
 
                                                     }
