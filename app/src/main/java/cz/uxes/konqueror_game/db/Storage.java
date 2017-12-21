@@ -54,7 +54,7 @@ public class Storage extends SQLiteOpenHelper {
     public Player playerInfo(){
 
         SQLiteDatabase db = this.getReadableDatabase();
-        onUpgrade(db, 0, 0);
+        //onUpgrade(db, 0, 0);
 
         String id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
