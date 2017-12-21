@@ -2,6 +2,7 @@ package cz.uxes.konqueror_game.game;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ public class ConnectActivity extends AppCompatActivity {
 
         String hostname = ((TextView) findViewById(R.id.connectHostname) ).getText().toString();
         player.setNick( ( (TextView) findViewById(R.id.connectNick) ).getText().toString() );
+        player.setId(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
         player.setHostname( hostname );
         storage.updatePlayer(player);
 
